@@ -377,7 +377,31 @@ all third-party materials remain the property of their respective creators <br>
 
         </section>
 
+
+<audio id="playmusic" loop preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
 <script>
+
+(() => {
+  const audio = document.getElementById("playmusic");
+  audio.volume = 0.1;
+
+  audio.play().catch(() => {
+    const startMusic = () => {
+      audio.play().catch(() => {});
+    };
+
+    document.addEventListener("click", startMusic, {
+      once: true
+    });
+    document.addEventListener("keydown", startMusic, {
+      once: true
+    });
+  });
+})();
+
 function showPage(event, pageId){
 
     event.preventDefault();
@@ -509,6 +533,62 @@ document.querySelectorAll(".zoom-gallery img").forEach(img => {
 });
 
 </script>
+
+<style>
+
+/* TEMP ASH  */
+html::before,
+html::after {
+  content: "";
+  position: fixed;
+  inset: -100% -50%;
+  width: 200%;
+  height: 300%;
+  pointer-events: none;
+  z-index: 999999;
+  background-repeat: repeat;
+  will-change: transform;
+}
+
+html::before {
+  opacity: 0.45;
+  background-image:
+    radial-gradient(1px 1px at 25px 35px, #aaa 98%, transparent),
+    radial-gradient(2px 2px at 140px 180px, #777 98%, transparent),
+    radial-gradient(1px 1px at 220px 90px, #ddd 98%, transparent),
+    radial-gradient(1px 1px at 330px 250px, #888 98%, transparent),
+    radial-gradient(2px 2px at 410px 120px, #999 98%, transparent);
+  background-size: 450px 300px;
+  animation: ash-rain-fall 38s linear infinite;
+}
+
+html::after {
+  opacity: 0.25;
+  background-image:
+    radial-gradient(2px 2px at 80px 100px, #bbb 98%, transparent),
+    radial-gradient(3px 3px at 260px 270px, #666 98%, transparent),
+    radial-gradient(1px 1px at 360px 50px, #ddd 98%, transparent);
+  background-size: 500px 380px;
+  animation: ash-rain-drift 55s linear infinite;
+}
+
+@keyframes ash-rain-fall {
+  from { transform: translate3d(0, -10%, 0); }
+  to   { transform: translate3d(-4%, 20%, 0); }
+}
+
+@keyframes ash-rain-drift {
+  from { transform: translate3d(0, -5%, 0); }
+  to   { transform: translate3d(5%, 18%, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html::before,
+  html::after {
+    animation: none;
+  }
+}
+</style>
 
 </body>
 </html>
