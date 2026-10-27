@@ -29,10 +29,12 @@ body{
 /* Main layout */
 
 .container{
-    width:980px;
+    width:850px;
     margin:40px auto;
     display:flex;
-    gap:20px;
+    gap:90px;
+    align-items: flex-start;
+
 }
 
 h3{
@@ -54,6 +56,9 @@ l {
 
 .sidebar{
     width:220px;
+    flex-shrink: 0;
+    margin-top: 50px;
+    flex-shrink: 0;
     border:1px solid #d9d9d9;
     background:#fff;
 }
@@ -72,7 +77,7 @@ l {
 }
 
 .profile h2{
-    font-size:18px;
+    font-size:17px;
     color:#C2A5AB;
     margin-bottom:10px;
     text-align: center;
@@ -140,6 +145,8 @@ l {
 
 .page{
     display:none;
+    flex-shrink: 0;
+    margin-top: 10px;
 }
 
 .page.active{
@@ -338,12 +345,44 @@ l {
 }
 
 a.click{
-    color:#B08692;
+    color:#FFFFFF;
     text-decoration:none;
 }
 
 a.click:hover{
     color:#E3B3BF;
+}
+
+.click {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    width: calc(100% - 6px);
+    box-sizing: border-box;
+    margin: 3px;
+
+    padding: 6px 8px;
+    background-color: #B89AA1;
+    border: 1px solid #ff9fb8;
+    border-radius: 0;
+
+    color: #ddd;
+    text-decoration: none;
+    font-size: 12px;
+
+    transition: background-color 0.2s, padding-left 0.1s;
+}
+
+.click img {
+    width: 14px;
+    height: auto;
+}
+
+.click:hover {
+    background-color: #9E8084;
+    border-color: #ff9fb8;
+    padding-left: 14px;
 }
 
 /* ---------------- MP3 STYLER ---------------- */
@@ -380,10 +419,23 @@ audio:hover {
 
 .hint-wrap {
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   color: #aaa;
   line-height: 1.6;
   position: relative;
+}
+
+l {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 12px;
+    color: #aaa;
+    line-height: 1.6;
+    position: relative;
+    box-sizing: border-box;
 }
 
 /* ---------------- LINK BOXES ---------------- */
@@ -394,7 +446,7 @@ audio:hover {
     gap: 8px;
     flex-wrap: wrap;
     width: 210px;
-    margin: 0 auto;
+    margin: 0 auto;\
 }
 
 .linktree a {
@@ -419,13 +471,15 @@ audio:hover {
     text-align: center;
 
     flex-shrink: 0;
+
+    transition: background-color 0.2s;
 }
 
-/* Start second row in the center */
+/* Start second row in the center 
 .linktree a:nth-child(4) {
     margin-left: 33px;
 }
-
+*/
 .linktree a:hover {
     background:#856E73;
     color:#E3BFC5;
@@ -435,13 +489,18 @@ audio:hover {
 /* ---------------- PROFILE PICTURE ---------------- */
 
 .profile-pic {
-  width: 124px !important;
-  height: 124px !important;
+  width: 96px !important;
+  height: 96px !important;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
   flex-shrink: 0;
   margin: 0 auto;
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
 }
 
 /* ---------------- MOBILE SUPPORT ---------------- */
@@ -453,13 +512,24 @@ audio:hover {
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
+        align-items: stretch !important;
+        gap: 20px !important;
     }
 
     .sidebar,
     .page {
         width: 100% !important;
         max-width: 100% !important;
+        min-width: 0 !important;
         box-sizing: border-box !important;
+    }
+
+    .sidebar {
+        flex-shrink: 0 !important;
+    }
+
+    .page {
+        flex: none !important;
     }
 }
 
@@ -473,13 +543,13 @@ audio:hover {
         position: static !important;
         transform: none !important;
         left: auto !important;
-
         width: 190px !important;
+        max-width: 100% !important;
         margin-left: auto !important;
         margin-right: auto !important;
+        box-sizing: border-box !important;
     }
 }
-
 /* ---------------- LOGO ---------------- */
 
 .logo-container {
