@@ -434,23 +434,23 @@
             <div class="box">
 <br>
 <div class="zoom-gallery">
-  <img src="images/gallery/fadinglifeoriginal.jpg" data-title="fading life cover">
-  <img src="images/gallery/outtabox.jpg" data-title="me by celine (2026)">
-  <img src="images/gallery/cutie_pie.png" data-title="by andrzej monastyrnyj (2026)">
-  <img src="images/gallery/calmnight.jpg" data-title="calm night">
-  <img src="images/gallery/safecabin.jpg" data-title="safe cabin">
-  <img src="images/gallery/emptysickness.jpg" data-title="empty sickness">
-  <img src="images/gallery/montparnasse.jpg" data-title="montparnasse">
-  <img src="images/gallery/pitilesscensors.jpg" data-title="pitiless censors">
-  <img src="images/gallery/blackmesa2020.jpg" data-title="black mesa 2020">
-  <img src="images/gallery/redmark.jpg" data-title="red mark">
-  <img src="images/gallery/chinadolls.jpg" data-title="china doll">
-  <img src="images/gallery/kenwood.jpg" data-title="kenwood avenue">
-  <img src="images/gallery/rickroll.jpg" data-title="rick roll">
-  <img src="images/gallery/hallsdream.jpg" data-title="hallsdream">
-  <img src="images/gallery/majortom.jpg" data-title="major tom">
-  <img src="images/gallery/beachaccess.jpg" data-title="lumina ave - wrightsville beach access (from ascension)">
   <img src="images/gallery/fm_lobby_b1.jpg" data-title="fm_lobby_b1">
+  <img src="images/gallery/beachaccess.jpg" data-title="lumina ave - wrightsville beach access (from ascension)">
+  <img src="images/gallery/hallsdream.jpg" data-title="hallsdream">
+  <img src="images/gallery/rickroll.jpg" data-title="rick roll">
+  <img src="images/gallery/kenwood.jpg" data-title="kenwood avenue">
+  <img src="images/gallery/chinadolls.jpg" data-title="china doll">
+  <img src="images/gallery/redmark.jpg" data-title="red mark">
+  <img src="images/gallery/blackmesa2020.jpg" data-title="black mesa 2020">
+  <img src="images/gallery/pitilesscensors.jpg" data-title="pitiless censors">
+  <img src="images/gallery/montparnasse.jpg" data-title="montparnasse">
+  <img src="images/gallery/emptysickness.jpg" data-title="empty sickness">
+  <img src="images/gallery/majortom.jpg" data-title="major tom">
+  <img src="images/gallery/safecabin.jpg" data-title="safe cabin">
+  <img src="images/gallery/calmnight.jpg" data-title="calm night">
+  <img src="images/gallery/cutie_pie.png" data-title="by andrzej monastyrnyj (2026)">
+  <img src="images/gallery/outtabox.jpg" data-title="me by celine (2026)">
+  <img src="images/gallery/fadinglifeoriginal.jpg" data-title="fading life cover">
 </div>
 
                 </div>
@@ -484,6 +484,7 @@ my contents are exclusive to my uploads—any upload found elsewhere has not bee
 please do not reupload, redistribute, alter, or remix any part of this content without permission
 no income is generated from creations, no donations or financial contributions are accepted
 all third-party materials remain the property of their respective creators <br>
+website is coded by me
   </span>
 </div>
 
@@ -513,116 +514,172 @@ function showPage(event, pageId){
 
 /*  IMAGE VIEWER  */
 
+
 const tooltip = document.createElement("div");
 tooltip.className = "zoom-tooltip";
 document.body.appendChild(tooltip);
 
 function showTooltip(e, text) {
-  tooltip.textContent = text || "";
-  tooltip.style.left = e.clientX + "px";
-  tooltip.style.top = e.clientY + "px";
-  tooltip.style.opacity = "1";
+    tooltip.textContent = text || "";
+    tooltip.style.left = e.clientX + "px";
+    tooltip.style.top = e.clientY + "px";
+    tooltip.style.opacity = "1";
 }
 
 function hideTooltip() {
-  tooltip.style.opacity = "0";
+    tooltip.style.opacity = "0";
 }
 
 (function () {
+    function createViewer(src, title) {
+        const viewer = document.createElement("div");
+        viewer.className = "zoom-viewer";
 
-  function createViewer(src, title) {
+        const backdrop = document.createElement("div");
+        backdrop.className = "zoom-backdrop";
 
-    const viewer = document.createElement("div");
-    viewer.className = "zoom-viewer";
+        const img = document.createElement("img");
+        img.src = src;
+        img.draggable = false;
 
-    const backdrop = document.createElement("div");
-    backdrop.className = "zoom-backdrop";
+        // Override the original top/left positioning.
+        img.style.position = "absolute";
+        img.style.top = "0";
+        img.style.left = "0";
+        img.style.maxWidth = "90vw";
+        img.style.maxHeight = "90vh";
+        img.style.width = "auto";
+        img.style.height = "auto";
+        img.style.transformOrigin = "0 0";
+        img.style.transition = "none";
+        img.style.cursor = "grab";
+        img.style.userSelect = "none";
 
-    const img = document.createElement("img");
-    img.src = src;
+        const closeBtn = document.createElement("div");
+        closeBtn.className = "zoom-close";
+        closeBtn.textContent = "✕";
 
-    const closeBtn = document.createElement("div");
-    closeBtn.className = "zoom-close";
-    closeBtn.textContent = "✕";
+        const titleEl = document.createElement("div");
+        titleEl.className = "zoom-title";
+        titleEl.textContent = title || "";
 
-    const titleEl = document.createElement("div");
-    titleEl.className = "zoom-title";
-    titleEl.textContent = title || "";
+        viewer.append(backdrop, img, closeBtn, titleEl);
+        document.body.appendChild(viewer);
 
-    viewer.appendChild(backdrop);
-    viewer.appendChild(img);
-    viewer.appendChild(closeBtn);
-    viewer.appendChild(titleEl);
+        let scale = 1;
+        let x = 0;
+        let y = 0;
+        let dragging = false;
+        let startX = 0;
+        let startY = 0;
+        let lastX = 0;
+        let lastY = 0;
 
-    document.body.appendChild(viewer);
+        function render() {
+            img.style.transform =
+                `translate(${x}px, ${y}px) scale(${scale})`;
+        }
 
-viewer.addEventListener("click", (e) => {
-  e.stopPropagation();
-});
+        function centerImage() {
+            const width = img.offsetWidth;
+            const height = img.offsetHeight;
 
-img.addEventListener("click", (e) => {
-  e.stopPropagation();
-});
+            x = (window.innerWidth - width) / 2;
+            y = (window.innerHeight - height) / 2;
 
-    let scale = 1;
-    let x = 0;
-    let y = 0;
+            render();
+        }
 
+        function close() {
+            viewer.remove();
+            document.removeEventListener("keydown", onKeyDown);
+        }
 
-function render() {
-  img.style.transform =
-    `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${scale})`;
-}
+        function onKeyDown(e) {
+            if (e.key === "Escape") close();
+        }
 
-    function close() {
-      viewer.remove();
+        closeBtn.addEventListener("click", close);
+        backdrop.addEventListener("click", close);
+        document.addEventListener("keydown", onKeyDown);
+
+        img.addEventListener("load", centerImage);
+
+        viewer.addEventListener("wheel", e => {
+            e.preventDefault();
+
+            const oldScale = scale;
+            const factor = Math.exp(-e.deltaY * 0.0015);
+
+            scale = Math.max(1, Math.min(5, scale * factor));
+
+            // Zoom toward the cursor.
+            const ratio = scale / oldScale;
+            x = e.clientX - (e.clientX - x) * ratio;
+            y = e.clientY - (e.clientY - y) * ratio;
+
+            if (scale === 1) {
+                centerImage();
+            } else {
+                render();
+            }
+        }, { passive: false });
+
+        img.addEventListener("pointerdown", e => {
+            if (e.button !== 0) return;
+
+            dragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            lastX = x;
+            lastY = y;
+
+            img.style.cursor = "grabbing";
+            img.setPointerCapture(e.pointerId);
+            e.preventDefault();
+        });
+
+        img.addEventListener("pointermove", e => {
+            if (!dragging) return;
+
+            x = lastX + e.clientX - startX;
+            y = lastY + e.clientY - startY;
+
+            render();
+        });
+
+        function stopDragging() {
+            dragging = false;
+            img.style.cursor = "grab";
+        }
+
+        img.addEventListener("pointerup", stopDragging);
+        img.addEventListener("pointercancel", stopDragging);
+        img.addEventListener("dragstart", e => e.preventDefault());
+
+        if (img.complete && img.naturalWidth) {
+            centerImage();
+        }
+
+        render();
     }
 
-    closeBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      close();
+    document.querySelectorAll(".zoom-gallery img").forEach(img => {
+        img.addEventListener("click", () => {
+            createViewer(img.src, img.dataset.title);
+        });
+
+        img.addEventListener("mouseenter", e => {
+            showTooltip(e, img.dataset.title);
+        });
+
+        img.addEventListener("mousemove", e => {
+            showTooltip(e, img.dataset.title);
+        });
+
+        img.addEventListener("mouseleave", hideTooltip);
     });
-
-	backdrop.addEventListener("click", (e) => {
- 	 e.preventDefault();
- 	 e.stopPropagation();
- 	 close();
-	});
-
-    viewer.addEventListener("wheel", (e) => {
-      e.preventDefault();
-
-      const step = 0.15;
-      scale += (e.deltaY < 0 ? 1 : -1) * step;
-      scale = Math.max(1, Math.min(6, scale));
-
-      render();
-    }, { passive: false });
-
-    render();
-  }
-
-  document.querySelectorAll(".zoom-gallery img").forEach(img => {
-    img.addEventListener("click", () => {
-      createViewer(img.src, img.dataset.title);
-    });
-  });
-
 })();
-
-document.querySelectorAll(".zoom-gallery img").forEach(img => {
-
-  img.addEventListener("mouseenter", (e) => {
-    showTooltip(e, img.dataset.title);
-  });
-
-  img.addEventListener("mousemove", (e) => {
-    showTooltip(e, img.dataset.title);
-  });
-
-  img.addEventListener("mouseleave", hideTooltip);
-
-});
 
 </script>
 
